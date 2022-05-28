@@ -3,28 +3,47 @@
 require 'date'
 require 'optparse'
 
-year=#{y}
-month=#{m}
+opt = OptionParser.new
 
-print year
-print month
+opt.on('-y')
+opt.on('-m')
 
-=begin
+calendar=opt.parse!(ARGV)
+
+year=calendar[0]
+month=calendar[1]
+
+# エラー対応を考えているがいったんコメント
+=begin 
 if year.is_a?(Integer) || month.is_a?(Integer)  then
   if year > 1970 || year < 2100 then
-    "1970 以上2100以下の数値をいれてください"
+    e = Exception.new("年は1970 以上2100以下の数値をいれてください")
+    rescue
+    p e 
+    end
+end
+  if month > 0 || month < 13 then
+    e = Exception.new("月は1 以上12以下の数値をいれてください")
+  rescue
+    p e 
   end
-elsif year is :null then
-  year=Date.today.strftime('%Y')
-elsif month is :null then
-  month=Date.today.strftime('%m')
-else
-  "#{y} もしくは #{m}は数値ではありません"
+
+elsif year.is_a?(String) || month.is_a?(String)  then
+  e = Exception.new("数値をいれてください")
+  rescue
+    p e 
+ 
 end
 =end
 
-year=Date.today.strftime('%Y')
-month=Date.today.strftime('%m')
+
+if year.nil? then
+  year=Date.today.strftime('%Y')
+end
+if  month.nil? then
+  month=Date.today.strftime('%m')
+end
+
 
 calendar_header=[month,year].join("月 ")
 
