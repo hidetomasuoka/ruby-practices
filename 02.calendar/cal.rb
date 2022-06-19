@@ -37,54 +37,43 @@ end
 =end
 
 
-if year.nil? then
-  year=Date.today.strftime('%Y')
-end
-if  month.nil? then
-  month=Date.today.strftime('%m')
-end
+year  = Date.today.year if year.nil?
+month = Date.today.month if month.nil?
 
+calendar_header = "#{month}月 #{year}"
 
-calendar_header=[month,year].join("月 ")
+first_day = Date.new(year.to_i, month.to_i, 1).day
+last_day = Date.new(year.to_i, month.to_i, -1).day
+space=" "
+week=""
+(first_day..last_day).each do |day|
+  days_week = Date.new(year.to_i, month.to_i, day).cwday 
 
-last_day = Date.new(year.to_i, month.to_i, -1).strftime('%d')
-
-for days in 1..last_day.to_i do
-  days_week = Date.new(year.to_i, month.to_i, days).strftime('%a')
-
-  if days ==1 then
-    first_day_week = Date.new(year.to_i, month.to_i, 1).strftime('%a')
-    if first_day_week== "Mon" then
-      week=[week,days].join("    ")
-    elsif first_day_week== "Tue" then
-      week=[week,days].join("       ")
-    elsif first_day_week== "Wed" then
-      week=[week,days].join("          ")
-    elsif first_day_week== "Thu" then
-      week=[week,days].join("             ")
-    elsif first_day_week== "Fri" then
-      week=[week,days].join("                ")
-    elsif first_day_week== "Sat" then
-      week=[week,days].join("                   ")
-    else 
-      week=[week,days].join(" ")
+  if day==first_day 
+    first_day_week = Date.new(year.to_i, month.to_i, 1).cwday 
+    if first_day_week ==7
+      week=[week,day].join(space*(first_day_week*2))
+    else
+      week=[week,day].join(space*(first_day_week*2+4))
     end
-  elsif days < 10 && days_week != "Sun" then
-    week=[week,days].join("  ")
-  elsif days < 10 && days_week == "Sun" then
-    week=[week,days].join(" ")
+  end
+  if first_day < day && day < 10 && days_week != 7 
+    week=[week,day].join(space*2)
+  end
+  if first_day < day && day < 10 && days_week == 7 
+    week=[week,day].join(space)
   end
      
-  if days >= 10 && days_week != "Sun" then
-    week=[week,days].join(" ")
-  elsif  days >= 10 && days_week == "Sun" then
-    week << days.to_s
+  if first_day < day && day >= 10 && days_week != 7 
+    week=[week,day].join(space)
+  end
+  if  first_day < day && day >= 10 && days_week == 7 
+    week.concat day.to_s
   end
 
-  if days_week == "Sat" then
-    week<<"\n"
+  if days_week == 6 
+    week.concat("\n")
   end
-
 end
 
 
